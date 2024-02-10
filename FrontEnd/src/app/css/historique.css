@@ -1,6 +1,7 @@
 .historique{
     display: flex;
     flex-direction: column;
+    min-height: calc(100vh - 302px);
 }
 
 .histo-user, .histo-prod{

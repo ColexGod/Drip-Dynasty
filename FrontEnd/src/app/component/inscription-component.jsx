@@ -52,7 +52,7 @@ const CreateModal = ({ onClose, isOpen, onUserCreated, setAdmin, pf }) => {
             .then((response) => {
                 if (response.status === 200) {
                     console.log(response.data)
-                    onUserCreated()
+                    onUserCreated(userData)
                     pf(userData.programmeFidelite)
                 } else {
                     setBackendError(true)

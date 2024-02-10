@@ -2,6 +2,7 @@
     width: 60%;
     height: fit-content;
     display: inline-block;
+    min-height: calc(100vh - 302px);
 }
 
 #command>#content {

@@ -10,7 +10,9 @@ const LoginModal = ({
     onLoginSuccess, // Fonction à exécuter en cas de connexion réussie
     admin,
     programmeF,
-    sendUserId
+    sendUserId,
+    utilisateur,
+    userConnection
 }) => {
     // Déclaration des états
     const [username, setUsername] = useState('')
@@ -27,10 +29,15 @@ const LoginModal = ({
 
     // Fonction pour gérer la tentative de connexion
     const handleLogin = () => {
-        const loginData = {
-            email: username,
-            password: motDePasse
-        }
+        const loginData = userConnection !== null
+            ? {
+                email: userConnection.email,
+                password: userConnection.motDePasse
+            }
+            : {
+                email: username,
+                password: motDePasse
+            }
 
         axios({
             method: 'post',
@@ -45,6 +52,7 @@ const LoginModal = ({
                     console.log(response.data)
                     programmeF(response.data.programmeFidelite)
                     sendUserId(response.data.user_id)
+                    utilisateur(response.data)
                     setErrorMessage('Login succesfull.')
                     onLoginSuccess()
                 } else {
@@ -66,6 +74,7 @@ const LoginModal = ({
 
     return (
         <div id='login'>
+            {userConnection !== null ? handleLogin() : ''}
             {/* Fenêtre modale de connexion */}
             <div
                 className='modal'

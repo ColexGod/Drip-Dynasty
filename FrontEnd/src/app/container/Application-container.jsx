@@ -10,6 +10,7 @@ import InscriptionContainer from '../component/inscription-component'
 import LoginContainer from '../component/login-component'
 import HistoriqueContainer from '../component/historique'
 import PanierContainer from '../component/panier-component'
+import MonCompteContainer from '../component/mon-compte'
 
 class ApplicationContainer extends Component {
     constructor (props) {
@@ -22,13 +23,15 @@ class ApplicationContainer extends Component {
         const uId = localStorage.getItem('userId')
         const pId = localStorage.getItem('productId')
         const pFidelite = localStorage.getItem('programmeF')
+        const savedUtilisateur = localStorage.getItem('utilisateur')
         this.state = {
             currentPage: savedPage ? parseInt(savedPage, 10) : 0,
             Log: isLog ? JSON.parse(isLog) : false,
             Admin: isAdmin ? JSON.parse(isAdmin) : false,
             userId: uId,
             productId: pId ? parseInt(pId, 10) : 0,
-            programmeF: pFidelite ? JSON.parse(pFidelite) : false
+            programmeF: pFidelite ? JSON.parse(pFidelite) : false,
+            utilisateur: savedUtilisateur ? JSON.parse(savedUtilisateur) : null
         }
     }
 
@@ -70,6 +73,10 @@ class ApplicationContainer extends Component {
         this.setState({ currentPage: 6 }, this.saveState)
     }
 
+    handleMonCompte = () => {
+        this.setState({ currentPage: 7 }, this.saveState)
+    }
+
     handleLoginSuccess = () => {
         this.handleShop()
         this.setState({ Log: true }, () => { this.saveLog() })
@@ -77,10 +84,12 @@ class ApplicationContainer extends Component {
     }
 
     handleLogOutSuccess = () => {
-        this.setState({ Log: false, Admin: false, programmeF: false }, () => {
+        this.setState({ Log: false, Admin: false, programmeF: false, currentPage: 0, utilisateur: null }, () => {
             this.saveIsAdmin()
             this.saveLog()
             this.saveFidelite()
+            this.saveState()
+            this.seveUser()
         })
     }
 
@@ -96,6 +105,11 @@ class ApplicationContainer extends Component {
     saveFidelite = () => {
         // Save the currentPage value to localStorage
         localStorage.setItem('programmeF', JSON.stringify(this.state.programmeF))
+    }
+
+    seveUser = () => {
+        // Save the currentPage value to localStorage
+        localStorage.setItem('utilisateur', JSON.stringify(this.state.utilisateur))
     }
 
     handleLog = (data) => {
@@ -138,8 +152,17 @@ class ApplicationContainer extends Component {
         this.setState({ programmeF: Pfidelite }, () => { this.saveFidelite() })
     }
 
+    handleUtilisateur = (data) => {
+        this.setState({ utilisateur: data }, () => { this.seveUser() })
+    }
+
+    userCreat = (data) => {
+        this.setState({ utilisateur: data }, () => { this.seveUser() })
+        this.setState({ currentPage: 4 }, this.saveState)
+    }
+
     render () {
-        const { currentPage, Admin, programmeF } = this.state
+        const { currentPage, Admin, programmeF, utilisateur } = this.state
 
         return (
             <div>
@@ -152,13 +175,14 @@ class ApplicationContainer extends Component {
                     onHistoriqueClick={this.handleHisto}
                     isAdmin={Admin}
                     onPanierClick={this.handlePaniers}
+                    onMonCompteClick={this.handleMonCompte}
                 />
 
                 {currentPage === 0 && <AccueilContainer onProductClicked={this.handleDetail} />}
                 {currentPage === 1 && <DetailContainer productId={this.state.selectedProductId} userId={this.state.userId} isLog={this.state.Log} onPanier={this.handlePaniers} />}
                 {currentPage === 2 && <ShopContainer admin={Admin} onProductClicked={this.handleDetail} />}
                 {currentPage === 3 && <InscriptionContainer
-                    onUserCreated={this.handleLoginSuccess}
+                    onUserCreated={this.userCreat}
                     pf={this.fidelite}
                 />}
                 {currentPage === 5 && <HistoriqueContainer />}
@@ -169,8 +193,11 @@ class ApplicationContainer extends Component {
                     programmeF={this.fidelite}
                     // eslint-disable-next-line react/jsx-handler-names
                     sendUserId={this.handleId}
+                    utilisateur={this.handleUtilisateur}
+                    userConnection={utilisateur}
                 />}
                 {currentPage === 6 && <PanierContainer uid={this.state.userId} pF={programmeF} />}
+                {currentPage === 7 && <MonCompteContainer utilisateur={utilisateur} compteSuppr={this.handleLogOutSuccess} />}
                 <FooterContainer />
             </div>
         )

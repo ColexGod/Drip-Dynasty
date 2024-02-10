@@ -47,7 +47,8 @@
 }
 
 .shop-listeproduitglobal {
-    margin-top: 20px;
+    margin: 20px 0;
+    min-height: calc(100vh - 342px);
 }
 
 .shop-listeproduits ul {

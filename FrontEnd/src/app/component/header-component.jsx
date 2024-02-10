@@ -12,7 +12,8 @@ const Header = ({
     onLogout,
     onHistoriqueClick,
     isAdmin,
-    onPanierClick
+    onPanierClick,
+    onMonCompteClick
 }) => {
     return (
         <header>
@@ -37,6 +38,11 @@ const Header = ({
                                 HISTORIQUE
                             </a>
                                    </li> : ''}
+                        {isLoggedIn ? isAdmin ? '' : <li>
+                            <a href='#' onClick={onMonCompteClick}>
+                                MON COMPTE
+                            </a>
+                                                     </li> : ''}
                         <a href='#' className='loginbox' onClick={isLoggedIn ? onLogout : onLoginClick}>
                                 {isLoggedIn ? 'LOGOUT' : 'LOGIN'}
                         </a>
@@ -51,11 +57,11 @@ const Header = ({
                                     /* src={img_offline.src} */ alt='Offline'
                                 />
                         )}
-                        {isLoggedIn ? <li>
+                        {isLoggedIn ? isAdmin ? '' : <li>
                             <a href='#' onClick={onPanierClick}>
                             PANIER
                             </a>
-                                      </li> : ''}
+                                                     </li> : ''}
                     </ul>
                 </nav>
             </div>
